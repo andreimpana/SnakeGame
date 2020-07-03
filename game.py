@@ -140,7 +140,7 @@ def gameLoop():
         pygame.display.update()
 
         if superPowerActive:
-            clock.tick(snake_speed*2.0)
+            clock.tick(snake_speed*1.8)
         else:
             clock.tick(snake_speed)
 
