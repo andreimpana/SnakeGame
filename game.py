@@ -36,31 +36,34 @@ def draw_snake(snake_block, snake_body):
         pygame.draw.rect(dis, BLACK, [x[0], x[1], snake_block, snake_block])
 
 
-def gameLoop():
-    x1 = dis_width/2
-    y1 = dis_height/2
+def game_loop():
+    snake_x = dis_width / 2
+    snake_y = dis_height / 2
 
-    currentTime = 0
+    current_time = 0
 
-    deltaX = 0
-    deltaY = 0
+    delta_x = 0
+    delta_y = 0
 
+    # Handling quit
     game_over = False
     game_close = False
 
+    # Snake array
     snake_body = []
-    Length_snake = 1
+    length_snake = 1
+
     # SuperPower Attributes
-    superPowerActive = False
-    superStartTime = 0
+    super_power_active = False
+    super_start_time = 0
 
     # SuperPower init Location
-    superPowerx = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
-    superPowerY = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
+    super_power_x = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
+    super_power_y = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
 
     # Initiate the first set of cords for first food
-    foodX = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
-    foodY = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
+    food_x = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
+    food_y = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
 
     while not game_over and not game_close:
 
@@ -70,84 +73,86 @@ def gameLoop():
                 game_close = True
             # User input
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a and deltaX != snake_block:
-                    deltaX = -snake_block
-                    deltaY = 0
-                elif event.key == pygame.K_d and deltaX != -snake_block:
-                    deltaX = snake_block
-                    deltaY = 0
-                elif event.key == pygame.K_s and deltaY != -snake_block:
-                    deltaX = 0
-                    deltaY = snake_block
-                elif event.key == pygame.K_w and deltaY != snake_block:
-                    deltaX = 0
-                    deltaY = -snake_block
+                if event.key == pygame.K_a and delta_x != snake_block:
+                    delta_x = -snake_block
+                    delta_y = 0
+                elif event.key == pygame.K_d and delta_x != -snake_block:
+                    delta_x = snake_block
+                    delta_y = 0
+                elif event.key == pygame.K_s and delta_y != -snake_block:
+                    delta_x = 0
+                    delta_y = snake_block
+                elif event.key == pygame.K_w and delta_y != snake_block:
+                    delta_x = 0
+                    delta_y = -snake_block
                 elif event.key == pygame.K_q:
                     game_close = True
 
         # if snake hits wall
-        if x1 >= dis_width or x1 < 0 or y1 >= dis_height or y1 < 0:
+        if snake_x >= dis_width or snake_x < 0 or snake_y >= dis_height or snake_y < 0:
             game_over = True
 
         # update snakes delta
-        x1 += deltaX
-        y1 += deltaY
+        snake_x += delta_x
+        snake_y += delta_y
         dis.fill(WHITE)
 
         # draw food
-        pygame.draw.rect(dis, RED, [foodX, foodY, snake_block, snake_block])
-        if(superPowerActive == False):
-            pygame.draw.rect(dis, BLUE, [superPowerx, superPowerY, snake_block, snake_block])
+        pygame.draw.rect(dis, RED, [food_x, food_y, snake_block, snake_block])
+        if super_power_active == False:
+            pygame.draw.rect(
+                dis, BLUE, [super_power_x, super_power_y, snake_block, snake_block]
+            )
 
         # Snake Length
         snake_head = []
-        snake_head.append(x1)
-        snake_head.append(y1)
+        snake_head.append(snake_x)
+        snake_head.append(snake_y)
         snake_body.append(snake_head)
 
-        if len(snake_body) > Length_snake:
+        if len(snake_body) > length_snake:
             del snake_body[0]
 
         # Snake body hit detection
-        for x in snake_body[:-1]:
-            if x == snake_head:
+        for part in snake_body[:-1]:
+            if part == snake_head:
                 game_close = True
 
         # Draws snake
         draw_snake(snake_block, snake_body)
 
         # If snake eats food
-        if x1 == foodX and y1 == foodY:
-            foodX = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
-            foodY = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
-            Length_snake += 1
+        if snake_x == food_x and snake_y == food_y:
+            food_x = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
+            food_y = round(randrange(0, dis_height - snake_block) / 10.0) * 10.0
+            length_snake += 1
 
         # If snake eats super power
-        if x1 == superPowerx and y1 == superPowerY:
-            superPowerx = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
-            superPowerY = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
-            superStartTime = currentTime
-            Length_snake += 5
-            superPowerActive = True
+        if snake_x == super_power_x and snake_y == super_power_y:
+            super_power_x = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
+            super_power_y = round(randrange(0, dis_width - snake_block) / 10.0) * 10.0
+            super_start_time = current_time
+            length_snake += 5
+            super_power_active = True
 
         # If Truns off super power after 10 seconds
-        if superPowerActive == True and currentTime == superStartTime + 1000:
-            superPowerActive = False
+        if super_power_active == True and current_time == super_start_time + 1000:
+            super_power_active = False
 
         # Display score
-        dis_Score(Length_snake - 1)
+        dis_Score(length_snake - 1)
 
         pygame.display.update()
 
-        if superPowerActive:
-            clock.tick(snake_speed*1.8)
+        if super_power_active:
+            clock.tick(snake_speed * 1.8)
         else:
             clock.tick(snake_speed)
 
-        currentTime += 1
+        current_time += 1
 
     pygame.quit()
     quit()
 
 
-gameLoop()
+game_loop()
